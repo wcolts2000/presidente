@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import logo from "../../images/favicon.png";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ const Nav = styled.nav`
   padding: 2rem;
   background: black;
   align-items: center;
+  position: relative;
 
   a {
     font-size: 1.8rem;
@@ -22,27 +23,84 @@ const Nav = styled.nav`
     color: aqua;
   }
 
+  .nav {
+    @media (max-width: 750px) {
+      flex-direction: column;
+      background: black;
+      position: absolute;
+      top: 75px;
+      left: 0;
+      right: 0;
+      height: auto;
+      z-index: 10;
+    }
+  }
+
+  p.hamburger {
+    color: white;
+    font-weight: bold;
+    font-size: 3rem;
+    cursor: pointer;
+    display: none;
+
+    @media (max-width: 750px) {
+      display: initial;
+    }
+  }
+
   .logo {
     padding: 0;
     filter: invert(100%);
   }
 `;
 
-export default function Header() {
-  return (
-    <Nav>
-      <NavLink exact to="/" className="logo">
-        <img src={logo} alt="presidente spiral" />
-      </NavLink>
-      <div>
-        <NavLink exact to="/">
-          HOME
+export default class Header extends Component {
+  constructor() {
+    super();
+    this.state = {
+      navState: "none"
+    };
+  }
+
+  toggleNav = () => {
+    if (this.state.navState === "none") {
+      this.setState({ navState: "flex" });
+    } else {
+      this.setState({ navState: "none" });
+    }
+  };
+
+  render() {
+    return (
+      <Nav>
+        <NavLink exact to="/" className="logo">
+          <img src={logo} alt="presidente spiral" />
         </NavLink>
-        <NavLink to="/zine">ZINE</NavLink>
-        <NavLink to="/apparel">APPAREL</NavLink>
-        <NavLink to="/paint">PAINT</NavLink>
-        <NavLink to="/story">OUR STORY</NavLink>
-      </div>
-    </Nav>
-  );
+        <p className="hamburger" onClick={this.toggleNav}>
+          &#9776;
+        </p>
+        <div
+          className="nav"
+          navState={this.state.navState}
+          style={{ display: this.state.navState }}
+        >
+          <NavLink onClick={this.toggleNav} exact to="/">
+            HOME
+          </NavLink>
+          <NavLink onClick={this.toggleNav} to="/zine">
+            ZINE
+          </NavLink>
+          <NavLink onClick={this.toggleNav} to="/apparel">
+            APPAREL
+          </NavLink>
+          <NavLink onClick={this.toggleNav} to="/paint">
+            PAINT
+          </NavLink>
+          <NavLink onClick={this.toggleNav} to="/story">
+            OUR STORY
+          </NavLink>
+        </div>
+      </Nav>
+    );
+  }
 }
